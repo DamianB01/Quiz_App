@@ -59,6 +59,21 @@ class FirebaseService {
     );
   }
 
+  static Future<void> logQuestionAnswered({
+    required String category,
+    required String difficulty,
+    required bool isCorrect,
+  }) async {
+    await _analytics.logEvent(
+      name: 'question_answered',
+      parameters: {
+        'category': category,
+        'difficulty': difficulty,
+        'is_correct': isCorrect ? 'true' : 'false',
+      },
+    );
+  }
+
   static Future<void> logQuestionFavorited({
     required String category,
     required String difficulty,

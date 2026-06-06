@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 import 'quiz_screen.dart';
+import '../services/database_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,6 +12,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final ApiService _apiService = ApiService();
+  final DatabaseService _dbService = DatabaseService();
 
   List<Map<String, dynamic>> _categories = [];
   bool _isLoading = true;
@@ -36,7 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
       _errorMessage = null;
     });
     try {
-      final cats = await _apiService.fetchCategories();
+      final cats = await _apiService.fetchCategories(
+        dbService: _dbService,
+      );
       setState(() {
         _categories = cats;
         _isLoading = false;

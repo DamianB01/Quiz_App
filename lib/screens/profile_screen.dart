@@ -43,8 +43,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         0, (acc, r) => acc + r.percentage);
     return sum / _results.length;
   }
-  int get _bestScore =>
-      _results.isEmpty ? 0 : _results.map((r) => r.score).reduce((a, b) => a > b ? a : b);
+  double get _bestScore =>
+      _results.isEmpty ? 0 : _results.map((r) => r.percentage).reduce((a, b) => a > b ? a : b);
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +112,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _statCard(
             'Average %', '${_avgScore.toStringAsFixed(0)}%', Icons.percent),
         const SizedBox(width: 12),
-        _statCard('The best', '$_bestScore pts', Icons.star),
+        _statCard('The best', '${_bestScore.toStringAsFixed(0)}%', Icons.star),
       ],
     );
   }
@@ -229,6 +229,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
             subtitle: Text(widget.isDarkMode ? 'On' : 'Off'),
             value: widget.isDarkMode,
             onChanged: widget.onThemeChanged,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Card(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12)),
+          child: ListTile(
+            leading: const Icon(Icons.delete_sweep_outlined,
+                color: Colors.red),
+            title: const Text('Reset history'),
+            subtitle: const Text('Delete all quiz results and charts'),
+            onTap: () async {
+              final confirm = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text('Reset history?'),
+                  content: const Text(
+                      'All quiz results and charts will be deleted. Favorites will remain.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      child: const Text('Reset',
+                          style: TextStyle(color: Colors.red)),
+                    ),
+                  ],
+                ),
+              );
+              if (confirm == true) {
+                await _dbService.clearResults();
+                await _loadResults();
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('History has been reset')),
+                  );
+                }
+              }
+            },
           ),
         ),
       ],

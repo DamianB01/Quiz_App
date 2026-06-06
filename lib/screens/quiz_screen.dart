@@ -58,6 +58,7 @@ class _QuizScreenState extends State<QuizScreen> {
         amount: widget.questionCount,
         categoryId: widget.categoryId,
         difficulty: widget.difficulty,
+        dbService: _dbService,
       );
       for (final q in questions) {
         q.isFavorite = await _dbService.isFavorite(q.questionText);
@@ -81,13 +82,17 @@ class _QuizScreenState extends State<QuizScreen> {
 
   void _selectAnswer(String answer) {
     if (_answered) return;
+    final q = _questions[_currentIndex];
     setState(() {
       _selectedAnswer = answer;
       _answered = true;
-      if (answer == _questions[_currentIndex].correctAnswer) {
-        _score++;
-      }
+      if (answer == q.correctAnswer) _score++;
     });
+    FirebaseService.logQuestionAnswered(
+      category: q.category,
+      difficulty: q.difficulty,
+      isCorrect: answer == q.correctAnswer,
+    );
   }
 
   void _nextQuestion() {
