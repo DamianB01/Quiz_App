@@ -2,23 +2,36 @@ import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
 import 'screens/favorites_screen.dart';
 import 'screens/profile_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  runApp(const QuizApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  final savedDarkMode = prefs.getBool('dark_mode') ?? false;
+  runApp(QuizApp(initialDarkMode: savedDarkMode));
 }
 
 class QuizApp extends StatefulWidget {
-  const QuizApp({super.key});
+  final bool initialDarkMode;
+  const QuizApp({super.key, required this.initialDarkMode});
 
   @override
   State<QuizApp> createState() => _QuizAppState();
 }
 
 class _QuizAppState extends State<QuizApp> {
-  bool _isDarkMode = false;
+  late bool _isDarkMode;
 
-  void _toggleTheme(bool val) {
+  @override
+  void initState() {
+    super.initState();
+    _isDarkMode = widget.initialDarkMode;
+  }
+
+  Future<void> _toggleTheme(bool val) async {
     setState(() => _isDarkMode = val);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('dark_mode', val);
   }
 
   @override

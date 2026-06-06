@@ -5,7 +5,7 @@ import '../services/database_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   final bool isDarkMode;
-  final ValueChanged<bool> onThemeChanged;
+  final Future<void> Function(bool) onThemeChanged;
 
   const ProfileScreen({
     super.key,

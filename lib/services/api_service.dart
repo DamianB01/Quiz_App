@@ -27,7 +27,7 @@ class ApiService {
   }) async {
     String url = '$_baseUrl/api.php?amount=$amount';
     if (categoryId != null) url += '&category=$categoryId';
-    if (difficulty != null && difficulty != 'any') {
+    if (difficulty != null && difficulty != 'all') {
       url += '&difficulty=$difficulty';
     }
 

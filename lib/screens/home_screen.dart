@@ -17,11 +17,11 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _errorMessage;
 
   int? _selectedCategoryId;
-  String _selectedCategoryName = 'Any';
-  String _selectedDifficulty = 'any';
+  String _selectedCategoryName = 'All';
+  String _selectedDifficulty = 'all';
   int _questionCount = 10;
 
-  final List<String> _difficulties = ['any', 'easy', 'medium', 'hard'];
+  final List<String> _difficulties = ['all', 'easy', 'medium', 'hard'];
   final List<int> _counts = [5, 10, 15, 20];
 
   @override
@@ -68,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 'easy': return 'Easy';
       case 'medium': return 'Medium';
       case 'hard': return 'Hard';
-      default: return 'Any';
+      default: return 'All';
     }
   }
 
@@ -145,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
               isExpanded: true,
               items: [
                 const DropdownMenuItem(
-                    value: null, child: Text('Any category')),
+                    value: null, child: Text('All categories')),
                 ..._categories.map((c) => DropdownMenuItem(
                   value: c['id'] as int,
                   child: Text(c['name'],
@@ -155,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onChanged: (val) => setState(() {
                 _selectedCategoryId = val;
                 _selectedCategoryName = val == null
-                    ? 'Any'
+                    ? 'All'
                     : _categories
                     .firstWhere((c) => c['id'] == val)['name'];
               }),

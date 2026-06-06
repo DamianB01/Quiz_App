@@ -17,12 +17,6 @@ class Question {
     this.isFavorite = false,
   });
 
-  List<String> get allAnswers {
-    final answers = [...incorrectAnswers, correctAnswer];
-    answers.shuffle();
-    return answers;
-  }
-
   factory Question.fromJson(Map<String, dynamic> json) {
     return Question(
       category: json['category'],

@@ -26,6 +26,7 @@ class _QuizScreenState extends State<QuizScreen> {
   final ApiService _apiService = ApiService();
   final DatabaseService _dbService = DatabaseService();
 
+  List<List<String>> _shuffledAnswers = [];
   List<Question> _questions = [];
   bool _isLoading = true;
   String? _errorMessage;
@@ -57,6 +58,11 @@ class _QuizScreenState extends State<QuizScreen> {
       }
       setState(() {
         _questions = questions;
+        _shuffledAnswers = questions.map((q) {
+          final answers = [...q.incorrectAnswers, q.correctAnswer];
+          answers.shuffle();
+          return answers;
+        }).toList();
         _isLoading = false;
       });
     } catch (e) {
@@ -184,7 +190,7 @@ class _QuizScreenState extends State<QuizScreen> {
 
   Widget _buildQuiz() {
     final question = _questions[_currentIndex];
-    final answers = question.allAnswers;
+    final answers = _shuffledAnswers[_currentIndex];
     final progress = (_currentIndex + 1) / _questions.length;
 
     return Column(
