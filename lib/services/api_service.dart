@@ -2,14 +2,16 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:html_unescape/html_unescape.dart';
 import '../models/question.dart';
+import 'firebase_service.dart';
 
 class ApiService {
   static const String _baseUrl = 'https://opentdb.com';
   final HtmlUnescape _unescape = HtmlUnescape();
 
   Future<List<Map<String, dynamic>>> fetchCategories() async {
-    final response = await http.get(
-      Uri.parse('$_baseUrl/api_category.php'),
+    final response = await FirebaseService.traceApiCall(
+      'fetch_categories',
+          () => http.get(Uri.parse('$_baseUrl/api_category.php')),
     );
 
     if (response.statusCode == 200) {
@@ -31,7 +33,10 @@ class ApiService {
       url += '&difficulty=$difficulty';
     }
 
-    final response = await http.get(Uri.parse(url));
+    final response = await FirebaseService.traceApiCall(
+      'fetch_questions',
+          () => http.get(Uri.parse(url)),
+    );
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);

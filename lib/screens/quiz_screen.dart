@@ -3,6 +3,7 @@ import '../models/question.dart';
 import '../services/api_service.dart';
 import '../services/database_service.dart';
 import 'result_screen.dart';
+import '../services/firebase_service.dart';
 
 class QuizScreen extends StatefulWidget {
   final int? categoryId;
@@ -47,6 +48,11 @@ class _QuizScreenState extends State<QuizScreen> {
       _isLoading = true;
       _errorMessage = null;
     });
+    FirebaseService.logQuizStarted(
+      category: widget.categoryName,
+      difficulty: widget.difficulty,
+      questionCount: widget.questionCount,
+    );
     try {
       final questions = await _apiService.fetchQuestions(
         amount: widget.questionCount,
@@ -111,6 +117,10 @@ class _QuizScreenState extends State<QuizScreen> {
       await _dbService.removeFavorite(q.questionText);
     } else {
       await _dbService.addFavorite(q);
+      FirebaseService.logQuestionFavorited(
+        category: q.category,
+        difficulty: q.difficulty,
+      );
     }
     setState(() => q.isFavorite = !q.isFavorite);
   }

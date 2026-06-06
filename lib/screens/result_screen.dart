@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/quiz_result.dart';
 import '../services/database_service.dart';
 import 'home_screen.dart';
+import '../services/firebase_service.dart';
 
 class ResultScreen extends StatefulWidget {
   final int score;
@@ -37,6 +38,11 @@ class _ResultScreenState extends State<ResultScreen> {
       date: DateTime.now(),
     );
     await _dbService.saveResult(result);
+    FirebaseService.logQuizCompleted(
+      category: widget.categoryName,
+      score: widget.score,
+      totalQuestions: widget.totalQuestions,
+    );
   }
 
   String get _feedbackText {
